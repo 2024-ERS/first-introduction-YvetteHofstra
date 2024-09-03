@@ -49,23 +49,44 @@ x) and length (length_mm), showing each year with a different color, and
 add a regression line through all the years
 
 ```{r}
-
+ggplot(data=FactCockleSize |> dplyr::filter(thickness_mm <300), 
+       mapping = aes(x = thickness_mm,
+                     y = length_mm, color = year)) +
+  geom_point() +
+geom_smooth(method = 'lm', col = 'red' )   ##Regression line
 ```
 
 Further explore the plot with a regression line through all the data
 
 ```{r}
+ggplot(data=FactCockleSize |> dplyr::filter(thickness_mm <300), 
+       mapping = aes(x = thickness_mm,
+                     y = length_mm, color = TransectPoint_ID)) +
+  geom_point() +
+geom_smooth(method = 'lm', col = 'red' )
 ```
 
 Make same plot but showing a separate regression line per year
 
 ```{r}
 # color the points by year, but plot one regression line
+ggplot(data=FactCockleSize |> dplyr::filter(thickness_mm <300), 
+       mapping = aes(x = thickness_mm,
+                     y = length_mm, color = as.factor(year))) +
+  geom_point() +
+geom_smooth( method = "lm", se = F)+
+  theme_minimal()
 ```
 
 Make a panel plot where with each year is shown as a separate graph
 
 ```{r}
+ggplot(data=FactCockleSize |> dplyr::filter(thickness_mm <300), 
+       mapping = aes(x = thickness_mm,
+                     y = length_mm, color = as.factor(year))) +
+  geom_point() +
+  facet_wrap(~ year) +
+geom_smooth(method = 'lm', col = 'blue' )
 ```
 
 We conclude from this that: \* there were two important outliers in the
