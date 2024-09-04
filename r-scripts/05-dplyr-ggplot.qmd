@@ -47,6 +47,10 @@ Read the FactCockleSize table with read_csv, which reads it as tibble
 
 ```{r}
 FactCockleSize <- readr::read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vSpormjGiM4uWMTIZYm9Upt5j1Ige_Wu9CrhGGdvjXwxmHP2R6S7JDyEmiGTn3fXihl5s5yBn_sdo8h/pub?gid=1538766002&single=true&output=csv")
+print(FactCockleSize)
+names(FactCockleSize)
+nrow(FactCockleSize)
+
 ```
 
 Plot with ggplot the relation between cockle thickness (thickness_mm, as
@@ -54,11 +58,40 @@ x) and length (length_mm), showing each year with a different color, and
 add a regression line through all the years
 
 ```{r}
+ggplot2::ggplot()
+# own try
 ggplot(data=FactCockleSize |> dplyr::filter(thickness_mm <300), 
        mapping = aes(x = thickness_mm,
                      y = length_mm, color = year)) +
   geom_point() +
-geom_smooth(method = 'lm', col = 'red' )   ##Regression line
+geom_smooth(method = 'lm', col = 'purple' )   ##Regression line
+
+
+
+# in class 
+ggplot2::ggplot(data=FactCockleSize,  #what data table to use
+                mapping=aes(x=length_mm,y=thickness_mm))  #what is on the axes
+
+# still need to choose type of graph 
+ggplot2::ggplot(data=FactCockleSize,  
+                mapping=aes(x=length_mm,y=thickness_mm)) + 
+  geom_point()
+
+# A big outlier is seen. Likely a data entry mistake, remove it (not likely 1,5m cockle with 25mm length)
+FactCockleSize |> dplyr::filter(thickness_mm>500)  #know obs_ID
+# want to make a new dataset (but want to do it as little as possible) read data again without the mistaken observation
+
+FactCockleSize <- readr::read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vSpormjGiM4uWMTIZYm9Upt5j1Ige_Wu9CrhGGdvjXwxmHP2R6S7JDyEmiGTn3fXihl5s5yBn_sdo8h/pub?gid=1538766002&single=true&output=csv") |> 
+  dplyr::filter(CockleObs_ID!=1531, CockleObs_ID!=469)
+
+# plot data again without outlier
+ggplot2::ggplot(data=FactCockleSize,  
+                mapping=aes(x=length_mm,y=thickness_mm)) + 
+  geom_point()
+
+# find other outlier
+FactCockleSize |> dplyr::filter(thickness_mm>10 & length_mm<5)
+# also remove observation 469 above
 ```
 
 Further explore the plot with a regression line through all the data
