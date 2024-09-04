@@ -58,7 +58,7 @@ x) and length (length_mm), showing each year with a different color, and
 add a regression line through all the years
 
 ```{r}
-ggplot2::ggplot()
+ggplot2::ggplot() # show what you are using
 # own try
 ggplot(data=FactCockleSize |> dplyr::filter(thickness_mm <300), 
        mapping = aes(x = thickness_mm,
@@ -82,7 +82,9 @@ FactCockleSize |> dplyr::filter(thickness_mm>500)  #know obs_ID
 # want to make a new dataset (but want to do it as little as possible) read data again without the mistaken observation
 
 FactCockleSize <- readr::read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vSpormjGiM4uWMTIZYm9Upt5j1Ige_Wu9CrhGGdvjXwxmHP2R6S7JDyEmiGTn3fXihl5s5yBn_sdo8h/pub?gid=1538766002&single=true&output=csv") |> 
-  dplyr::filter(CockleObs_ID!=1531, CockleObs_ID!=469)
+  dplyr::filter(CockleObs_ID!=1531, CockleObs_ID!=469) |>
+  dplyr::mutate(year=factor(year))   #make year a factor
+print(FactCockleSize)
 
 # plot data again without outlier
 ggplot2::ggplot(data=FactCockleSize,  
@@ -97,11 +99,29 @@ FactCockleSize |> dplyr::filter(thickness_mm>10 & length_mm<5)
 Further explore the plot with a regression line through all the data
 
 ```{r}
+# own try
 ggplot(data=FactCockleSize |> dplyr::filter(thickness_mm <300), 
        mapping = aes(x = thickness_mm,
                      y = length_mm, color = TransectPoint_ID)) +
   geom_point() +
 geom_smooth(method = 'lm', col = 'red' )
+
+
+
+# in class, with a regression line
+ggplot2::ggplot(data=FactCockleSize,  
+                mapping=aes(x=length_mm,y=thickness_mm)) + 
+  geom_point() +
+  geom_smooth(method="lm")
+
+#calculate a linear regression
+model_lm<-lm(thickness_mm~length_mm, data=FactCockleSize) 
+summary(model_lm)
+
+# equation: thickness_mm=-0.353+0.699*length_mm
+# a cockle of lenth 20 mm has an predicted width of:
+-0.353+0.699*20 #13.627
+# this regression is significant, R2=0.9, P<0.001 (***)
 ```
 
 Make same plot but showing a separate regression line per year
@@ -114,6 +134,13 @@ ggplot(data=FactCockleSize |> dplyr::filter(thickness_mm <300),
   geom_point() +
 geom_smooth( method = "lm", se = F)+
   theme_minimal()
+
+
+# in class
+ggplot2::ggplot(data=FactCockleSize,  
+                mapping=aes(x=length_mm,y=thickness_mm)) + 
+  geom_point(mapping=aes(col=year)) +
+  geom_smooth(method="lm")
 ```
 
 Make a panel plot where with each year is shown as a separate graph
@@ -125,6 +152,16 @@ ggplot(data=FactCockleSize |> dplyr::filter(thickness_mm <300),
   geom_point() +
   facet_wrap(~ year) +
 geom_smooth(method = 'lm', col = 'blue' )
+
+
+# in class
+drop_na(FactCockleSize) |>
+  ggplot2::ggplot(mapping=aes(x=length_mm,y=thickness_mm)) + 
+    geom_point(mapping=aes(col=year), size=2) +
+    xlab("cockle length (mm)") + 
+    ylab("cockle width (mm)") + 
+    geom_smooth(method="lm") +
+    facet_wrap(~year)
 ```
 
 We conclude from this that: \* there were two important outliers in the
