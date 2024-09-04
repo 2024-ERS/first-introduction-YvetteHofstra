@@ -162,6 +162,8 @@ drop_na(FactCockleSize) |>
     ylab("cockle width (mm)") + 
     geom_smooth(method="lm") +
     facet_wrap(~year)
+
+# correlation found, not much difference between years. Length is a fine indicator for biomass
 ```
 
 We conclude from this that: \* there were two important outliers in the
