@@ -31,7 +31,7 @@ vdat1<- vdat |>
   dplyr::filter(!Species_ID %in% c("bare", "litter", "mosses", 
                                    "SalicEur", "SalicPro" )) #excluding them, not including
 
-
+ 
 #show the names of all the species in the dataset
 vdat1$Species_ID
 unique(vdat1$Species_ID)
